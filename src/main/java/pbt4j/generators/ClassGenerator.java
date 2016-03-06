@@ -28,9 +28,9 @@ public class ClassGenerator extends Generator<Object> {
 
     @Override
     public Object generate(SourceOfRandomness random, GenerationStatus status) {
-        final List<Object> generatedArgs = Stream.of(constructor.getGenericParameterTypes())
+        final List<?> generatedArgs = Stream.of(constructor.getGenericParameterTypes())
                 .map(generatorFunction)
-                .map(generator1 -> generator1.generate(new SourceOfRandomness(new Random()), statusSupplier.get()))
+                .map(generator -> generator.generate(new SourceOfRandomness(new Random()), statusSupplier.get()))
                 .collect(Collectors.toList());
 
         try {

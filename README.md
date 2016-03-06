@@ -7,7 +7,7 @@
 
 Property-based testing extensions for JUnit.
 pbt4j allows you to add parameters to your test methods. You can either provide your parameter's values using annotations or
-they will be randomly generated. You can also control how many times test are being run (default value is 100 times).
+they will be randomly generated. You can also control how many times tests are being run (default value is 100 times).
 When providing custom test values, pbt4j uses Nashorn's JavaScript engine to resolve them so possibilities are almost endless.
 
 Learn more about pbt4j on the [Wiki home](https://github.com/soundvibe/pbt4j/wiki).
