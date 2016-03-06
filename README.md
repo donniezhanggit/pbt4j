@@ -79,6 +79,14 @@ public class PropertyBasedTestingTest {
         assertEquals("bar2", map.get("second"));
     }
 
+    @Test
+        public void shouldProvideCustomClassUsingJs(
+                @JsData({"new Foo('Foo', 28, [new Bean()], null)"}) Foo foo) throws Exception {
+            assertEquals("Foo", foo.name);
+            assertEquals(28, foo.age);
+            assertEquals(Foo.class, foo.getClass());
+        }
+
 }
 ```
 

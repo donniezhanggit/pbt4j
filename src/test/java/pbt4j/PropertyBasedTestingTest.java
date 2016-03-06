@@ -83,7 +83,7 @@ public class PropertyBasedTestingTest {
     }
 
     @Test
-    @Named("should Provide Java bean")
+    //@Named("should Provide Java bean")
     public void shouldProvideJavaBean(Bean bean) throws Exception {
         System.out.println(bean);
     }
