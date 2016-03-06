@@ -13,6 +13,7 @@ import pbt4j.generators.*;
 
 import java.lang.reflect.*;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.*;
 
 /**
@@ -23,7 +24,7 @@ public class ParametrizedStatement extends Statement {
     private final Object target;
     private final List<Generator<?>> generators;
     private int times = 100;
-    private final static Map<String, Generator<?>> DEFAULT_GENERATORS = new HashMap<>(50);
+    private final static Map<String, Generator<?>> DEFAULT_GENERATORS = new ConcurrentHashMap<>(50);
     private static final String RANDOM_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz 1234567890 <>?;':[]{}-_=+|!@#$%^&*()~.,/";
     static {
         DEFAULT_GENERATORS.put("int", new IntegerGenerator());
@@ -67,11 +68,11 @@ public class ParametrizedStatement extends Statement {
     }
 
     class Pair {
-        Type type;
+        Type typ;
         JsData jsData;
 
-        public Pair(Type type, JsData jsData) {
-            this.type = type;
+        public Pair(Type typ, JsData jsData) {
+            this.typ = typ;
             this.jsData = jsData;
         }
     }
@@ -99,7 +100,7 @@ public class ParametrizedStatement extends Statement {
 
             return IntStream.range(0, dataFromAnnotations.size())
                     .mapToObj(i -> new Pair(parameterTypes.get(i), dataFromAnnotations.get(i)))
-                    .map(pair -> new DataGenerator(pair.type, pair.jsData.value()))
+                    .map(pair -> new DataGenerator(pair.typ, pair.jsData.value()))
                     .collect(Collectors.toList());
         }
 
@@ -112,28 +113,22 @@ public class ParametrizedStatement extends Statement {
                 .collect(Collectors.toList());
     }
 
-    protected Generator<?> resolveGenerator(Type type) {
-        if (type instanceof Class<?>) {
-            Class<?> aClass = (Class<?>) type;
+    protected Generator<?> resolveGenerator(Type typ) {
+        if (typ instanceof Class<?>) {
+            Class<?> aClass = (Class<?>) typ;
             if (aClass.isEnum()) {
                 return new EnumGenerator(aClass);
             }
-
-            Generator<?> generator = DEFAULT_GENERATORS.get(aClass.getSimpleName());
-            if (generator == null) {
-                generator = new ClassGenerator(aClass, this::resolveGenerator, this::getStatus);
-                //throw new UnsupportedOperationException("Generator not available for type: " + type.getTypeName());
-            }
-
-            return generator;
+            return DEFAULT_GENERATORS.computeIfAbsent(aClass.getSimpleName(), s ->
+                new ClassGenerator(aClass, this::resolveGenerator, this::getStatus));
         } else {
-            return DEFAULT_GENERATORS.computeIfAbsent(type.getTypeName(),
-                    key -> resolveGenericTypeGenerator(type));
+            return DEFAULT_GENERATORS.computeIfAbsent(typ.getTypeName(),
+                    key -> resolveGenericTypeGenerator(typ));
         }
     }
 
-    private Generator<?> resolveGenericTypeGenerator(Type type) {
-        ParameterizedType parameterizedType = (ParameterizedType)type;
+    private Generator<?> resolveGenericTypeGenerator(Type typ) {
+        ParameterizedType parameterizedType = (ParameterizedType)typ;
         final List<Generator<?>> components = Stream.of(parameterizedType.getActualTypeArguments())
                 .map(this::resolveGenerator)
                 .collect(Collectors.toList());
@@ -156,7 +151,7 @@ public class ParametrizedStatement extends Statement {
         }
 
         if (rootGenerator == null) {
-            throw new UnsupportedOperationException("Generator not available for type: " + type.getTypeName());
+            throw new UnsupportedOperationException("Generator not available for type: " + typ.getTypeName());
         }
         return rootGenerator;
     }

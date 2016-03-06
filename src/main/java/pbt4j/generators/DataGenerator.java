@@ -17,13 +17,13 @@ public class DataGenerator extends Generator<Object> {
     private final static ScriptEngine engine = new ScriptEngineManager().getEngineByName("nashorn");
 
     private final List<String> values;
-    private final Type type;
+    private final Type typ;
     private int current = 0;
 
 
-    public DataGenerator(Type type, String[] values) {
+    public DataGenerator(Type typ, String[] values) {
         super(Object.class);
-        this.type = type;
+        this.typ = typ;
         this.values = Arrays.asList(values);
     }
 
@@ -40,8 +40,8 @@ public class DataGenerator extends Generator<Object> {
         final Object data = evalJs(values.get(current));
 
         Object result = null;
-        if (type instanceof Class<?>) {
-            Class<?> aClass = (Class<?>) type;
+        if (typ instanceof Class<?>) {
+            Class<?> aClass = (Class<?>) typ;
             if (aClass.isAssignableFrom(data.getClass())) {
                 result = data;
             } else if (data instanceof ScriptObjectMirror) {
@@ -50,7 +50,7 @@ public class DataGenerator extends Generator<Object> {
                 result = ScriptUtils.convert(data, aClass);
             }
         } else {
-            ParameterizedType parameterizedType = (ParameterizedType)type;
+            ParameterizedType parameterizedType = (ParameterizedType) typ;
             final Class<?> rawType = (Class<?>) parameterizedType.getRawType();
             if (data instanceof ScriptObjectMirror) {
                 ScriptObjectMirror mirror = (ScriptObjectMirror) data;

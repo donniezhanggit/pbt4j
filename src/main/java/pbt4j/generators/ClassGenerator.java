@@ -17,18 +17,18 @@ public class ClassGenerator extends Generator<Object> {
     private final Supplier<GenerationStatus> statusSupplier;
     private final Constructor<?> constructor;
 
-    public ClassGenerator(Class<?> type, Function<Type, Generator<?>> generatorFunction, Supplier<GenerationStatus> statusSupplier) {
+    public ClassGenerator(Class<?> aClass, Function<Type, Generator<?>> generatorFunction, Supplier<GenerationStatus> statusSupplier) {
         super(Object.class);
         this.generatorFunction = generatorFunction;
         this.statusSupplier = statusSupplier;
-        this.constructor = Stream.of(type.getConstructors())
+        this.constructor = Stream.of(aClass.getDeclaredConstructors())
                 .max((o1, o2) -> Integer.valueOf(o1.getParameterCount()).compareTo(o2.getParameterCount()))
-                .orElseThrow(() -> new IllegalAccessError("Cannot find constructor for type: " + type.getTypeName()));
+                .orElseThrow(() -> new IllegalAccessError("Cannot find constructor for type: " + aClass));
     }
 
     @Override
     public Object generate(SourceOfRandomness random, GenerationStatus status) {
-        final List<?> generatedArgs = Stream.of(constructor.getGenericParameterTypes())
+        final List<Object> generatedArgs = Stream.of(constructor.getGenericParameterTypes())
                 .map(generatorFunction)
                 .map(generator -> generator.generate(new SourceOfRandomness(new Random()), statusSupplier.get()))
                 .collect(Collectors.toList());

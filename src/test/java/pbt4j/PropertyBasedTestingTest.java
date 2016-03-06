@@ -77,12 +77,13 @@ public class PropertyBasedTestingTest {
     }
 
     @Test
-    @Repeat(times = 10)
+    @Repeat(times = 1)
     public void shouldProvideCustomClass(Foo foo) throws Exception {
         System.out.println(foo);
     }
 
     @Test
+    @Repeat(times = 1)
     //@Named("should Provide Java bean")
     public void shouldProvideJavaBean(Bean bean) throws Exception {
         System.out.println(bean);

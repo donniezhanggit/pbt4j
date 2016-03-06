@@ -1,6 +1,5 @@
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/net.soundvibe/pbt4j/badge.svg)](https://maven-badges.herokuapp.com/maven-central/net.soundvibe/pbt4j)
 [![Build Status](https://travis-ci.org/soundvibe/pbt4j.png)](https://travis-ci.org/soundvibe/pbt4j)
-[![Coverage Status](https://codecov.io/github/soundvibe/pbt4j/coverage.svg?branch=develop)](https://codecov.io/github/soundvibe/pbt4j?branch=develop)
 [![Join the chat at https://gitter.im/soundvibe/pbt4j](https://badges.gitter.im/soundvibe/pbt4j.svg)](https://gitter.im/soundvibe/pbt4j?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 # pbt4j
