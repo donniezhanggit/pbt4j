@@ -89,6 +89,8 @@ public class PropertyBasedTestingTest {
     //@Named("should Provide Java bean")
     public void shouldProvideJavaBean(Bean bean) throws Exception {
         assertNotNull(bean);
+        assertEquals("test", bean.finalValue);
+        assertEquals("some data", Bean.STATIC_FIELD);
     }
 
     @Test

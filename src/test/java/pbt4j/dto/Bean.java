@@ -5,8 +5,11 @@ package pbt4j.dto;
  */
 public class Bean {
 
+    public static final String STATIC_FIELD = "some data";
+
     private String name;
     private int age;
+    public final String finalValue = "test";
 
     public Bean() {
     }

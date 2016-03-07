@@ -37,6 +37,8 @@ public class ClassGenerator extends Generator<Object> {
             if (generatedArgs.isEmpty()) {
                 final Object bean = constructor.newInstance();
                 Stream.of(bean.getClass().getDeclaredFields())
+                        .filter(field -> !Modifier.isStatic(field.getModifiers()))
+                        .filter(field -> !Modifier.isFinal(field.getModifiers()))
                         .peek(field -> field.setAccessible(true))
                         .forEach(field -> setRandomFieldValue(bean, field));
                 return bean;
