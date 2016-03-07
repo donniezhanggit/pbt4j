@@ -1,10 +1,8 @@
 package pbt4j;
 
 import com.pholser.junit.quickcheck.generator.*;
-import com.pholser.junit.quickcheck.generator.java.lang.*;
-import com.pholser.junit.quickcheck.generator.java.math.*;
-import com.pholser.junit.quickcheck.generator.java.time.*;
 import com.pholser.junit.quickcheck.generator.java.util.*;
+import com.pholser.junit.quickcheck.generator.java.util.function.*;
 import com.pholser.junit.quickcheck.internal.generator.*;
 import com.pholser.junit.quickcheck.random.SourceOfRandomness;
 import pbt4j.annotations.*;
@@ -14,10 +12,8 @@ import pbt4j.generators.*;
 import javax.script.ScriptContext;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.*;
-import java.math.*;
-import java.time.*;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.*;
 import java.util.stream.*;
 
 /**
@@ -90,7 +86,7 @@ public class ParametrizedStatement extends Statement {
             JsonData jsonData = (JsonData) annotation;
             final String[] values = Stream.of(jsonData.value())
                     .map(script -> "Java.asJSONCompatible(" + script + ")")
-                    .toArray(size -> new String[size]);
+                    .toArray(String[]::new);
             return Stream.<String[]>of(values);
         }
         return Stream.empty();
@@ -133,6 +129,40 @@ public class ParametrizedStatement extends Statement {
             rootGenerator = new HashSetGenerator();
         } else if (rawTypeOfGenericClass.isEnum()) {
             rootGenerator = new EnumGenerator(rawTypeOfGenericClass);
+        } else if (rawTypeOfGenericClass.equals(Supplier.class)) {
+            rootGenerator = new SupplierGenerator<>();
+        } else if (rawTypeOfGenericClass.equals(Function.class)) {
+            rootGenerator = new FunctionGenerator<>();
+        } else if (rawTypeOfGenericClass.equals(BiFunction.class)) {
+            rootGenerator = new BiFunctionGenerator<>();
+        } else if (rawTypeOfGenericClass.equals(BinaryOperator.class)) {
+            rootGenerator = new BinaryOperatorGenerator<>();
+        } else if (rawTypeOfGenericClass.equals(BiPredicate.class)) {
+            rootGenerator = new BiPredicateGenerator<>();
+        } else if (rawTypeOfGenericClass.equals(DoubleFunction.class)) {
+            rootGenerator = new DoubleFunctionGenerator<>();
+        } else if (rawTypeOfGenericClass.equals(IntFunction.class)) {
+            rootGenerator = new IntFunctionGenerator<>();
+        } else if (rawTypeOfGenericClass.equals(LongFunction.class)) {
+            rootGenerator = new LongFunctionGenerator<>();
+        } else if (rawTypeOfGenericClass.equals(Predicate.class)) {
+            rootGenerator = new PredicateGenerator<>();
+        } else if (rawTypeOfGenericClass.equals(ToDoubleBiFunction.class)) {
+            rootGenerator = new ToDoubleBiFunctionGenerator<>();
+        } else if (rawTypeOfGenericClass.equals(ToDoubleFunction.class)) {
+            rootGenerator = new ToDoubleFunctionGenerator<>();
+        } else if (rawTypeOfGenericClass.equals(ToIntBiFunction.class)) {
+            rootGenerator = new ToIntBiFunctionGenerator<>();
+        } else if (rawTypeOfGenericClass.equals(ToIntFunction.class)) {
+            rootGenerator = new ToIntFunctionGenerator<>();
+        } else if (rawTypeOfGenericClass.equals(ToLongBiFunction.class)) {
+            rootGenerator = new ToLongBiFunctionGenerator<>();
+        } else if (rawTypeOfGenericClass.equals(ToLongFunction.class)) {
+            rootGenerator = new ToLongFunctionGenerator<>();
+        } else if (rawTypeOfGenericClass.equals(UnaryOperator.class)) {
+            rootGenerator = new UnaryOperatorGenerator<>();
+        } else if (rawTypeOfGenericClass.equals(Stream.class)) {
+            rootGenerator = new StreamGenerator<>((Class<Stream<Object>>) rawTypeOfGenericClass, components);
         } else {
             throw new UnsupportedOperationException("Generator not available for type: " + parameterizedType.getTypeName());
         }

@@ -5,9 +5,13 @@ import org.junit.runner.RunWith;
 import pbt4j.annotations.*;
 import pbt4j.dto.Bean;
 import pbt4j.dto.Foo;
+import pbt4j.dto.Result;
 import pbt4j.dto.SimpleDto;
 
 import java.util.*;
+import java.util.function.Function;
+import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 import static org.junit.Assert.*;
 
@@ -121,6 +125,35 @@ public class PropertyBasedTestingTest {
 
     @Test
     public void shouldProvideRandomByteArrays(byte[] bytes) throws Exception {
-        System.out.println(new String(bytes));
+        System.out.println(Arrays.toString(bytes));
+    }
+
+    @Test
+    public void shouldProvideEnums(Result result) throws Exception {
+        assertTrue(result == Result.SUCCESS || result == Result.FAILURE);
+    }
+
+    @Test
+    public void shouldProvideSupplier(Supplier<Integer> supplier) throws Exception {
+        System.out.println(supplier.get());
+    }
+
+    @Test
+    public void shouldProvideFunction(Function<Integer, Integer> function) throws Exception {
+        System.out.println(function.apply(new Random().nextInt()));
+    }
+
+    @Test
+    public void shouldProvideStream(Stream<Byte> stringStream) throws Exception {
+        assertTrue(stringStream.count() >= 0);
+    }
+
+    @Test
+    public void shouldAssertException() throws Exception {
+        Check.assertException(RuntimeException.class, () -> {
+            System.out.println("starting");
+            throw new RuntimeException("error");
+        });
+
     }
 }

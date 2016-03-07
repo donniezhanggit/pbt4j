@@ -10,6 +10,7 @@ import com.pholser.junit.quickcheck.internal.generator.ArrayGenerator;
 import java.math.*;
 import java.time.*;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 
@@ -32,6 +33,10 @@ public final class Generators {
 
     public static void registerGenerator(String genericTypeName, Generator<?> generator) {
         GENERIC_CLASS_GENERATORS.put(genericTypeName, generator);
+    }
+
+    public static Optional<Generator<?>> findGenerator(Class<?> aClass) {
+        return Optional.ofNullable(CLASS_GENERATORS.get(aClass));
     }
 
     public static Generator<?> computeIfAbsent(Class<?> aClass, Function<Class<?>, Generator<?>> mappingFunction) {
