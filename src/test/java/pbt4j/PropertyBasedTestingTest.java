@@ -52,8 +52,7 @@ public class PropertyBasedTestingTest {
 
     @Test
     public void shouldRunTestMethod100Times(String text) throws Exception {
-        System.out.println(text);
-        //prints random text 100 times
+        assertNotNull(text);
     }
 
     @Test
@@ -111,5 +110,10 @@ public class PropertyBasedTestingTest {
         assertEquals("Alice", simpleDto.neighbours.get(0));
         assertEquals("Bob", simpleDto.neighbours.get(1));
         assertEquals(2, simpleDto.neighbours.size());
+    }
+
+    @Test
+    public void shouldProvideOptional(Optional<String> s) throws Exception {
+        assertEquals(Optional.class, s.getClass());
     }
 }
