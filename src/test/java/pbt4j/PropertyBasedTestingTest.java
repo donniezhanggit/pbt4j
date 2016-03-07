@@ -3,14 +3,10 @@ package pbt4j;
 import org.junit.*;
 import org.junit.runner.RunWith;
 import pbt4j.annotations.*;
-import pbt4j.dto.Bean;
-import pbt4j.dto.Foo;
-import pbt4j.dto.Result;
-import pbt4j.dto.SimpleDto;
+import pbt4j.dto.*;
 
 import java.util.*;
-import java.util.function.Function;
-import java.util.function.Supplier;
+import java.util.function.*;
 import java.util.stream.Stream;
 
 import static org.junit.Assert.*;

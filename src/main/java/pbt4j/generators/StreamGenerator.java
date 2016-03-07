@@ -10,14 +10,17 @@ import java.util.stream.Stream;
 /**
  * @author Linas on 2016.03.07.
  */
-public class StreamGenerator<T> extends Generator<Stream<T>> {
+public class StreamGenerator<T> extends ComponentizedGenerator<Stream<T>> {
 
-    private final ArrayListGenerator listGenerator;
+    private final ArrayListGenerator listGenerator = new ArrayListGenerator();
 
-    public StreamGenerator(Class<Stream<T>> type, List<Generator<?>> components) {
-        super(type);
-        this.listGenerator = new ArrayListGenerator();
-        this.listGenerator.addComponentGenerators(components);
+    public StreamGenerator() {
+        super(null);
+    }
+
+    @Override
+    public void addComponentGenerators(List<Generator<?>> newComponents) {
+        listGenerator.addComponentGenerators(newComponents);
     }
 
     @SuppressWarnings("unchecked")

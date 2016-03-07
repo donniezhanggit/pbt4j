@@ -4,15 +4,16 @@ import com.pholser.junit.quickcheck.generator.Generator;
 import com.pholser.junit.quickcheck.generator.java.lang.*;
 import com.pholser.junit.quickcheck.generator.java.math.*;
 import com.pholser.junit.quickcheck.generator.java.time.*;
-import com.pholser.junit.quickcheck.generator.java.util.DateGenerator;
+import com.pholser.junit.quickcheck.generator.java.util.*;
+import com.pholser.junit.quickcheck.generator.java.util.function.*;
 import com.pholser.junit.quickcheck.internal.generator.ArrayGenerator;
 
 import java.math.*;
 import java.time.*;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Function;
+import java.util.function.*;
+import java.util.stream.Stream;
 
 /**
  * @author OZY on 2016.03.07.
@@ -23,28 +24,15 @@ public final class Generators {
         //hide constructor
     }
 
-    private final static Map<Class<?>, Generator<?>> CLASS_GENERATORS = new ConcurrentHashMap<>(75);
-    private final static Map<String, Generator<?>> GENERIC_CLASS_GENERATORS = new ConcurrentHashMap<>(50);
+    private final static Map<Class<?>, Generator<?>> CLASS_GENERATORS = new ConcurrentHashMap<>(100);
     private static final String RANDOM_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz 1234567890 <>?;':[]{}-_=+|!@#$%^&*()~.,/";
 
     public static void registerGenerator(Class<?> aClass, Generator<?> generator) {
         CLASS_GENERATORS.put(aClass, generator);
     }
 
-    public static void registerGenerator(String genericTypeName, Generator<?> generator) {
-        GENERIC_CLASS_GENERATORS.put(genericTypeName, generator);
-    }
-
     public static Optional<Generator<?>> findGenerator(Class<?> aClass) {
         return Optional.ofNullable(CLASS_GENERATORS.get(aClass));
-    }
-
-    public static Generator<?> computeIfAbsent(Class<?> aClass, Function<Class<?>, Generator<?>> mappingFunction) {
-        return CLASS_GENERATORS.computeIfAbsent(aClass, mappingFunction);
-    }
-
-    public static Generator<?> computeGenericIfAbsent(String genericTypeName, Function<String, Generator<?>> mappingFunction) {
-        return GENERIC_CLASS_GENERATORS.computeIfAbsent(genericTypeName, mappingFunction);
     }
 
     static {
@@ -97,6 +85,44 @@ public final class Generators {
         CLASS_GENERATORS.put(Year.class, new YearGenerator());
         CLASS_GENERATORS.put(YearMonth.class, new YearMonthGenerator());
         CLASS_GENERATORS.put(ZonedDateTime.class, new ZonedDateTimeGenerator());
+        CLASS_GENERATORS.put(TimeZone.class, new TimeZoneGenerator());
         CLASS_GENERATORS.put(java.util.Date.class, new DateGenerator());
+
+        CLASS_GENERATORS.put(Optional.class, new OptionalGenerator());
+        CLASS_GENERATORS.put(Stream.class, new StreamGenerator<>());
+        CLASS_GENERATORS.put(List.class, new ArrayListGenerator());
+        CLASS_GENERATORS.put(ArrayList.class, new ArrayListGenerator());
+        CLASS_GENERATORS.put(LinkedList.class, new LinkedListGenerator());
+        CLASS_GENERATORS.put(Map.class, new HashMapGenerator());
+        CLASS_GENERATORS.put(HashMap.class, new HashMapGenerator());
+        CLASS_GENERATORS.put(IdentityHashMap.class, new IdentityHashMapGenerator());
+        CLASS_GENERATORS.put(LinkedHashMap.class, new LinkedHashMapGenerator());
+        CLASS_GENERATORS.put(Hashtable.class, new HashtableGenerator());
+        CLASS_GENERATORS.put(Set.class, new HashSetGenerator());
+        CLASS_GENERATORS.put(HashSet.class, new HashSetGenerator());
+        CLASS_GENERATORS.put(LinkedHashSet.class, new LinkedHashSetGenerator());
+        CLASS_GENERATORS.put(Stack.class, new StackGenerator());
+        CLASS_GENERATORS.put(Vector.class, new VectorGenerator());
+
+        CLASS_GENERATORS.put(Supplier.class, new SupplierGenerator<>());
+        CLASS_GENERATORS.put(Function.class, new FunctionGenerator<>());
+        CLASS_GENERATORS.put(BiFunction.class, new BiFunctionGenerator<>());
+        CLASS_GENERATORS.put(BiPredicate.class, new BiPredicateGenerator<>());
+        CLASS_GENERATORS.put(DoubleFunction.class, new DoubleFunctionGenerator<>());
+        CLASS_GENERATORS.put(IntFunction.class, new IntFunctionGenerator<>());
+        CLASS_GENERATORS.put(LongFunction.class, new LongFunctionGenerator<>());
+        CLASS_GENERATORS.put(Predicate.class, new PredicateGenerator<>());
+        CLASS_GENERATORS.put(ToDoubleBiFunction.class, new ToDoubleBiFunctionGenerator<>());
+        CLASS_GENERATORS.put(ToDoubleFunction.class, new ToDoubleFunctionGenerator<>());
+        CLASS_GENERATORS.put(ToIntBiFunction.class, new ToIntBiFunctionGenerator<>());
+        CLASS_GENERATORS.put(ToIntFunction.class, new ToIntFunctionGenerator<>());
+        CLASS_GENERATORS.put(ToLongBiFunction.class, new ToLongBiFunctionGenerator<>());
+        CLASS_GENERATORS.put(ToLongFunction.class, new ToLongFunctionGenerator<>());
+        CLASS_GENERATORS.put(UnaryOperator.class, new UnaryOperatorGenerator<>());
+        CLASS_GENERATORS.put(OptionalDouble.class, new OptionalDoubleGenerator());
+        CLASS_GENERATORS.put(OptionalInt.class, new OptionalIntGenerator());
+        CLASS_GENERATORS.put(OptionalLong.class, new OptionalLongGenerator());
+        CLASS_GENERATORS.put(Properties.class, new PropertiesGenerator());
+        CLASS_GENERATORS.put(BitSet.class, new BitSetGenerator());
     }
 }
