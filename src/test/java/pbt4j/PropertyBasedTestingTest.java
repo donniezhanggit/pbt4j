@@ -118,4 +118,9 @@ public class PropertyBasedTestingTest {
     public void shouldProvideOptional(Optional<String> s) throws Exception {
         assertEquals(Optional.class, s.getClass());
     }
+
+    @Test
+    public void shouldProvideRandomByteArrays(byte[] bytes) throws Exception {
+        System.out.println(new String(bytes));
+    }
 }
