@@ -72,19 +72,19 @@ public class PropertyBasedTestingTest {
 
     @Test
     public void shouldProvideMap(
-            @JsData({"Java.asJSONCompatible( {foo: 'bar', second: 'bar2'})"}) Map<String, String> map) throws Exception {
+            @JsonData({"{foo: 'bar', second: 'bar2'}"}) Map<String, String> map) throws Exception {
         assertEquals(HashMap.class, map.getClass());
         assertEquals("bar", map.get("foo"));
         assertEquals("bar2", map.get("second"));
     }
 
     @Test
-        public void shouldProvideCustomClassUsingJs(
-                @JsData({"new Foo('Foo', 28, [new Bean()], null)"}) Foo foo) throws Exception {
-            assertEquals("Foo", foo.name);
-            assertEquals(28, foo.age);
-            assertEquals(Foo.class, foo.getClass());
-        }
+    public void shouldProvideCustomClassUsingJs(
+            @JsData({"new Foo('Foo', 28, [new Bean()], null)"}) Foo foo) throws Exception {
+        assertEquals("Foo", foo.name);
+        assertEquals(28, foo.age);
+        assertEquals(Foo.class, foo.getClass());
+    }
 
 }
 ```

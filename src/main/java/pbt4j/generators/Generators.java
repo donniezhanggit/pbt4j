@@ -25,7 +25,7 @@ public final class Generators {
     }
 
     private final static Map<Class<?>, Generator<?>> CLASS_GENERATORS = new ConcurrentHashMap<>(100);
-    private static final String RANDOM_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz 1234567890 <>?;':[]{}-_=+|!@#$%^&*()~.,/";
+    private static final String RANDOM_CHARS = "AABCDEFGHIJKLMNOPQRSTUVWXYZ aabcdefghijklmnopqrstuvwxyz 1234567890 <>?;':[]{}-_=+|!@#$%^&*()~.,/";
 
     public static void registerGenerator(Class<?> aClass, Generator<?> generator) {
         CLASS_GENERATORS.put(aClass, generator);
