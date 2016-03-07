@@ -11,6 +11,8 @@ import pbt4j.annotations.*;
 import org.junit.runners.model.*;
 import pbt4j.generators.*;
 
+import javax.script.ScriptContext;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.*;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -22,6 +24,7 @@ import java.util.stream.*;
 public class ParametrizedStatement extends Statement {
     private final FrameworkMethod method;
     private final Object target;
+    private final ScriptContext scriptContext;
     private final List<Generator<?>> generators;
     private int times = 100;
     private final static Map<String, Generator<?>> DEFAULT_GENERATORS = new ConcurrentHashMap<>(50);
@@ -61,27 +64,27 @@ public class ParametrizedStatement extends Statement {
         DEFAULT_GENERATORS.put("Date", new DateGenerator());
     }
 
-    public ParametrizedStatement(FrameworkMethod method, Object target) {
+    public ParametrizedStatement(FrameworkMethod method, Object target, ScriptContext scriptContext) {
         this.method = method;
         this.target = target;
+        this.scriptContext = scriptContext;
         this.generators = resolveGenerators(method);
     }
 
     class Pair {
         Type typ;
-        JsData jsData;
+        String[] jsData;
 
-        public Pair(Type typ, JsData jsData) {
+        public Pair(Type typ, String[] jsData) {
             this.typ = typ;
             this.jsData = jsData;
         }
     }
 
     protected List<Generator<?>> resolveGenerators(FrameworkMethod method) {
-        final List<JsData> dataFromAnnotations = Stream.of(method.getMethod().getParameterAnnotations())
+        final List<String[]> dataFromAnnotations = Stream.of(method.getMethod().getParameterAnnotations())
                 .flatMap(Stream::of)
-                .filter(annotation -> annotation instanceof JsData)
-                .map(annotation -> (JsData) annotation)
+                .flatMap(this::jsonValues)
                 .collect(Collectors.toList());
 
         final List<Type> parameterTypes = Stream.of(method.getMethod().getGenericParameterTypes())
@@ -89,18 +92,18 @@ public class ParametrizedStatement extends Statement {
 
         if (!dataFromAnnotations.isEmpty()) {
             final long count = dataFromAnnotations.stream()
-                    .map(testData -> testData.value().length)
+                    .map(testData -> testData.length)
                     .distinct()
                     .count();
             if (count > 1) {
-                throw new IllegalArgumentException("@JsData arguments is of different size");
+                throw new IllegalArgumentException("@JsData or @JsonData arguments are of different size");
             }
 
-            times = dataFromAnnotations.get(0).value().length;
+            times = dataFromAnnotations.get(0).length;
 
             return IntStream.range(0, dataFromAnnotations.size())
                     .mapToObj(i -> new Pair(parameterTypes.get(i), dataFromAnnotations.get(i)))
-                    .map(pair -> new DataGenerator(pair.typ, pair.jsData.value()))
+                    .map(pair -> new JsDataGenerator(pair.typ, pair.jsData, scriptContext))
                     .collect(Collectors.toList());
         }
 
@@ -111,6 +114,20 @@ public class ParametrizedStatement extends Statement {
         return parameterTypes.stream()
                 .map(this::resolveGenerator)
                 .collect(Collectors.toList());
+    }
+
+    protected Stream<String[]> jsonValues(Annotation annotation) {
+        if (annotation instanceof JsData) {
+            JsData jsData = (JsData) annotation;
+            return Stream.<String[]>of(jsData.value());
+        } else if (annotation instanceof JsonData) {
+            JsonData jsonData = (JsonData) annotation;
+            final String[] values = Stream.of(jsonData.value())
+                    .map(script -> "Java.asJSONCompatible(" + script + ")")
+                    .toArray(size -> new String[size]);
+            return Stream.<String[]>of(values);
+        }
+        return Stream.empty();
     }
 
     protected Generator<?> resolveGenerator(Type typ) {

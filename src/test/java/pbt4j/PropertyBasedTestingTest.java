@@ -3,6 +3,9 @@ package pbt4j;
 import org.junit.*;
 import org.junit.runner.RunWith;
 import pbt4j.annotations.*;
+import pbt4j.dto.Bean;
+import pbt4j.dto.Foo;
+import pbt4j.dto.SimpleDto;
 
 import java.util.*;
 
@@ -12,13 +15,13 @@ import static org.junit.Assert.*;
  * @author Linas on 2016.03.05.
  */
 @RunWith(PropertyBasedTesting.class)
-@JsEval("var Foo = Java.type('pbt4j.Foo'); var Bean = Java.type('pbt4j.Bean');")
+@JsEval("var Foo = Java.type('pbt4j.dto.Foo'); var Bean = Java.type('pbt4j.dto.Bean'); var SimpleDto = Java.type('pbt4j.dto.SimpleDto');")
 public class PropertyBasedTestingTest {
 
     @Test
     public void shouldProvideTwoArguments(
-           @JsData({"1", "2"}) long numbers,
-           @JsData({"'foo'", "'bar'"}) String strings) {
+           @JsonData({"1", "2"}) long numbers,
+           @JsonData({"'foo'", "'bar'"}) String strings) {
         System.out.println("arg1: " + numbers);
         System.out.println("arg2: " + strings);
         //first run prints:
@@ -61,32 +64,32 @@ public class PropertyBasedTestingTest {
     }
 
     @Test
-    public void shouldProvideMap(
-            @JsData({"Java.asJSONCompatible( {foo: 'bar', second: 'bar2'})"}) Map<String, String> map
+    public void shouldProvideMap( //this works only from JDK 8u60+
+            @JsonData({"{foo: 'bar', second: 'bar2'}"}) Map<String, String> map
             ) throws Exception {
         assertEquals(HashMap.class, map.getClass());
         assertEquals("bar", map.get("foo"));
         assertEquals("bar2", map.get("second"));
-        System.out.println(map);
+        assertEquals(2, map.size());
     }
 
     @Test
     public void withoutParameters() throws Exception {
-        System.out.println("1");
+        assertTrue(true);
         //if test method does not contain parameters, just use junit default runner
     }
 
     @Test
     @Repeat(times = 1)
     public void shouldProvideCustomClass(Foo foo) throws Exception {
-        System.out.println(foo);
+        assertNotNull(foo);
     }
 
     @Test
     @Repeat(times = 1)
     //@Named("should Provide Java bean")
     public void shouldProvideJavaBean(Bean bean) throws Exception {
-        System.out.println(bean);
+        assertNotNull(bean);
     }
 
     @Test
@@ -95,6 +98,18 @@ public class PropertyBasedTestingTest {
         assertEquals("Foo", foo.name);
         assertEquals(28, foo.age);
         assertEquals(Foo.class, foo.getClass());
-        System.out.println(foo);
+        assertEquals(1, foo.beans.size());
+    }
+
+    @Test
+    public void shouldProvideSimpleDto(
+            @JsData({"new SimpleDto('test', 100, ['Alice', 'Bob'])", "new SimpleDto('test2', 100, ['Alice', 'Bob'])"})
+            SimpleDto simpleDto
+    ) throws Exception {
+        assertTrue(simpleDto.name.startsWith("test"));
+        assertEquals(100, simpleDto.total);
+        assertEquals("Alice", simpleDto.neighbours.get(0));
+        assertEquals("Bob", simpleDto.neighbours.get(1));
+        assertEquals(2, simpleDto.neighbours.size());
     }
 }

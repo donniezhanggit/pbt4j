@@ -1,4 +1,4 @@
-package pbt4j;
+package pbt4j.dto;
 
 import java.util.List;
 import java.util.Optional;

@@ -1,4 +1,4 @@
-package pbt4j;
+package pbt4j.dto;
 
 /**
  * @author Linas on 2016.03.06.

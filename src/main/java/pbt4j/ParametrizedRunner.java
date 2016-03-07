@@ -1,12 +1,14 @@
 package pbt4j;
 
 import pbt4j.annotations.*;
-import pbt4j.generators.DataGenerator;
+import pbt4j.generators.JsDataGenerator;
 import org.junit.runner.Description;
 import org.junit.runner.notification.RunNotifier;
 import org.junit.runners.BlockJUnit4ClassRunner;
 import org.junit.runners.model.*;
 
+import javax.script.ScriptContext;
+import javax.script.SimpleScriptContext;
 import java.lang.annotation.Annotation;
 import java.util.*;
 import java.util.stream.Stream;
@@ -17,13 +19,8 @@ import java.util.stream.Stream;
 public class ParametrizedRunner extends BlockJUnit4ClassRunner {
 
     private final Class<?> klass;
+    private final ScriptContext scriptContext = new SimpleScriptContext();
 
-    /**
-     * Creates a BlockJUnit4ClassRunner to run {@code klass}
-     *
-     * @param klass
-     * @throws InitializationError if the test class is malformed.
-     */
     public ParametrizedRunner(Class<?> klass) throws InitializationError {
         super(klass);
         this.klass = klass;
@@ -38,7 +35,7 @@ public class ParametrizedRunner extends BlockJUnit4ClassRunner {
     protected List<FrameworkMethod> getChildren() {
         Stream.of(klass.getAnnotationsByType(JsEval.class))
                 .map(JsEval::value)
-                .forEach(DataGenerator::evalJs);
+                .forEach(script -> JsDataGenerator.evalJs(script, scriptContext));
         return super.getChildren();
     }
 
@@ -61,7 +58,7 @@ public class ParametrizedRunner extends BlockJUnit4ClassRunner {
     @Override
     protected Statement methodInvoker(FrameworkMethod method, Object test) {
         return (method.getMethod().getParameterCount() > 0 ?
-                new ParametrizedStatement(method, test):
+                new ParametrizedStatement(method, test, scriptContext):
                 super.methodInvoker(method, test));
     }
 
