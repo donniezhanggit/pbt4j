@@ -31,7 +31,7 @@ public class ParametrizedStatement extends Statement {
     }
 
     class Pair {
-        Type typ;
+        final Type typ;
         String[] jsData;
 
         public Pair(Type typ, String[] jsData) {

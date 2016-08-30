@@ -16,9 +16,9 @@ public class PropertyBasedTesting extends Suite {
     /**
      * Only called reflectively. Do not use programmatically.
      */
-    public PropertyBasedTesting(Class<?> klass) throws Throwable {
-        super(klass, Collections.emptyList());
-        runners = Collections.singletonList(new ParametrizedRunner(klass));
+    public PropertyBasedTesting(Class<?> aClass) throws Throwable {
+        super(aClass, Collections.emptyList());
+        runners = Collections.singletonList(new ParametrizedRunner(aClass));
     }
 
     @Override

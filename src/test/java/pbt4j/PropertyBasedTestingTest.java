@@ -115,6 +115,7 @@ public class PropertyBasedTestingTest {
         assertEquals(2, simpleDto.neighbours.size());
     }
 
+    @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
     @Test
     public void shouldProvideOptional(Optional<String> s) throws Exception {
         assertEquals(Optional.class, s.getClass());

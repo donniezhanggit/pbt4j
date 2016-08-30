@@ -6,6 +6,7 @@ import java.util.Optional;
 /**
  * @author Linas on 2016.03.06.
  */
+@SuppressWarnings("OptionalUsedAsFieldOrParameterType")
 public class Foo {
 
     public final String name;

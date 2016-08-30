@@ -41,7 +41,7 @@ public class JsDataGenerator extends Generator<Object> {
     public Object generate(SourceOfRandomness random, GenerationStatus status) {
         final Object data = evalJs(values.get(current), scriptContext);
 
-        Object result = null;
+        Object result;
         if (typ instanceof Class<?>) {
             Class<?> aClass = (Class<?>) typ;
             if (aClass.isAssignableFrom(data.getClass())) {
