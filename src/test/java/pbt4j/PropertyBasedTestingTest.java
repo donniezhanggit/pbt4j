@@ -4,6 +4,7 @@ import org.junit.*;
 import org.junit.runner.RunWith;
 import pbt4j.annotations.*;
 import pbt4j.dto.*;
+import pbt4j.score.*;
 
 import java.util.*;
 import java.util.function.*;
@@ -151,5 +152,18 @@ public class PropertyBasedTestingTest {
             throw new RuntimeException("error");
         });
 
+    }
+
+    @Test
+    public void shouldProvideImplementationOfAnInterface(Score score) throws Exception {
+        final Class<? extends Score> actual = score.getClass();
+        System.out.println(actual);
+        assertTrue(
+                actual.equals(Advantage.class) ||
+                actual.equals(Deuce.class) ||
+                actual.equals(Forty.class) ||
+                actual.equals(Game.class) ||
+                actual.equals(Points.class)
+            );
     }
 }
