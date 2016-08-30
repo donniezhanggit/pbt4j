@@ -24,6 +24,7 @@ public class ClassGenerator extends Generator<Object> {
         this.constructor = Stream.of(aClass.getDeclaredConstructors())
                 .max((o1, o2) -> Integer.valueOf(o1.getParameterCount()).compareTo(o2.getParameterCount()))
                 .orElseThrow(() -> new IllegalAccessError("Cannot find constructor for type: " + aClass));
+        this.constructor.setAccessible(true);
     }
 
     @Override
